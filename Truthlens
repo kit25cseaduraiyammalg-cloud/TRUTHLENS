@@ -1,0 +1,996 @@
+import { cn } from "@/lib/utils";
+import { LucideIcon } from "lucide-react";
+
+interface AnalysisFactorCardProps {
+  icon: LucideIcon;
+  title: string;
+  value: number;
+  description: string;
+  delay?: number;
+}
+
+const AnalysisFactorCard = ({ 
+  icon: Icon, 
+  title, 
+  value, 
+  description,
+  delay = 0 
+}: AnalysisFactorCardProps) => {
+  const getValueColor = (val: number) => {
+    if (val >= 70) return "text-success";
+    if (val >= 40) return "text-warning";
+    return "text-destructive";
+  };
+
+  const getBarColor = (val: number) => {
+    if (val >= 70) return "bg-success";
+    if (val >= 40) return "bg-warning";
+    return "bg-destructive";
+  };
+
+  return (
+    <div 
+      className={cn(
+        "bg-gradient-card rounded-xl p-5 border border-border/50",
+        "opacity-0 animate-fade-up shadow-card hover:shadow-elevated transition-shadow duration-300"
+      )}
+      style={{ animationDelay: `${delay}ms`, animationFillMode: 'forwards' }}
+    >
+      <div className="flex items-start gap-4">
+        <div className="p-2.5 rounded-lg bg-primary/10">
+          <Icon className="w-5 h-5 text-primary" />
+        </div>
+        
+        <div className="flex-1">
+          <div className="flex items-center justify-between mb-1">
+            <h4 className="font-medium text-foreground">{title}</h4>
+            <span className={cn("font-mono font-bold", getValueColor(value))}>
+              {value}%
+            </span>
+          </div>
+          
+          <div className="w-full h-2 bg-secondary rounded-full overflow-hidden mb-2">
+            <div 
+              className={cn("h-full rounded-full transition-all duration-1000 ease-out", getBarColor(value))}
+              style={{ 
+                width: `${value}%`,
+                transitionDelay: `${delay + 200}ms`
+              }}
+            />
+          </div>
+          
+          <p className="text-sm text-muted-foreground">
+            {description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AnalysisFactorCard;
+[26/12, 6:32 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import TrustScoreGauge from "./TrustScoreGauge";
+import AnalysisFactorCard from "./AnalysisFactorCard";
+import { 
+  Brain, 
+  AlertTriangle, 
+  CheckCircle2, 
+  TrendingUp,
+  MessageSquareWarning,
+  BookOpen,
+  Scale,
+  Sparkles
+} from "lucide-react";
+
+interface AnalysisResult {
+  trustScore: number;
+  emotionalManipulation: number;
+  sourceCredibility: number;
+  factualConsistency: number;
+  linguisticPatterns: number;
+  summary: string;
+  keyFindings: string[];
+}
+
+interface AnalysisResultsProps {
+  results: AnalysisResult;
+}
+
+const AnalysisResults = ({ results }: AnalysisResultsProps) => {
+  return (
+    <div className="w-full max-w-4xl mx-auto space-y-8 mt-12">
+      {/* Main Score Section */}
+      <div className="bg-gradient-card rounded-2xl border border-border/50 p-8 shadow-elevated">
+        <div className="flex flex-col lg:flex-row items-center gap-8">
+          <TrustScoreGauge score={results.trustScore} size={180} />
+          
+          <div className="flex-1 text-center lg:text-left">
+            <h3 className="text-xl font-semibold text-foreground mb-3 flex items-center justify-center lg:justify-start gap-2">
+              <Brain className="w-5 h-5 text-primary" />
+              Analysis Summary
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              {results.summary}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Analysis Factors Grid */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <AnalysisFactorCard
+          icon={MessageSquareWarning}
+          title="Emotional Manipulation"
+          value={100 - results.emotionalManipulation}
+          description="Measures use of fear, outrage, or sensationalism to influence readers."
+          delay={0}
+        />
+        <AnalysisFactorCard
+          icon={BookOpen}
+          title="Source Credibility"
+          value={results.sourceCredibility}
+          description="Evaluates references to verified sources and journalistic standards."
+          delay={100}
+        />
+        <AnalysisFactorCard
+          icon={Scale}
+          title="Factual Consistency"
+          value={results.factualConsistency}
+          description="Checks claims against known facts and data patterns."
+          delay={200}
+        />
+        <AnalysisFactorCard
+          icon={TrendingUp}
+          title="Linguistic Patterns"
+          value={100 - results.linguisticPatterns}
+          description="Analyzes writing style for misleading or biased language."
+          delay={300}
+        />
+      </div>
+
+      {/* Key Findings */}
+      <div 
+        className="bg-gradient-card rounded-2xl border border-border/50 p-6 opacity-0 animate-fade-up shadow-card"
+        style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}
+      >
+        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-primary" />
+          Key Findings
+        </h3>
+        <ul className="space-y-3">
+          {results.keyFindings.map((finding, index) => (
+            <li key={index} className="flex items-start gap-3">
+              {finding.toLowerCase().includes("verified") || finding.toLowerCase().includes("credible") ? (
+                <CheckCircle2 className="w-5 h-5 text-success shrink-0 mt-0.5" />
+              ) : (
+                <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+              )}
+              <span className="text-muted-foreground">{finding}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default AnalysisResults;
+[26/12, 6:32 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Search, Link2, FileText, Loader2 } from "lucide-react";
+
+interface ContentInputProps {
+  onAnalyze: (content: string) => void;
+  isLoading: boolean;
+}
+
+const ContentInput = ({ onAnalyze, isLoading }: ContentInputProps) => {
+  const [content, setContent] = useState("");
+  const [inputType, setInputType] = useState<"text" | "url">("text");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (content.trim()) {
+      onAnalyze(content.trim());
+    }
+  };
+
+  return (
+    <div className="w-full max-w-3xl mx-auto">
+      {/* Input Type Toggle */}
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => setInputType("text")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+            inputType === "text"
+              ? "bg-primary/10 text-primary border border-primary/30"
+              : "bg-secondary/50 text-muted-foreground hover:text-foreground border border-transparent"
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          Paste Text
+        </button>
+        <button
+          onClick={() => setInputType("url")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+            inputType === "url"
+              ? "bg-primary/10 text-primary border border-primary/30"
+              : "bg-secondary/50 text-muted-foreground hover:text-foreground border border-transparent"
+          }`}
+        >
+          <Link2 className="w-4 h-4" />
+          Enter URL
+        </button>
+      </div>
+
+      {/* Input Form */}
+      <form onSubmit={handleSubmit} className="relative">
+        <div className="relative group">
+          {/* Glow effect */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/50 to-accent/50 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
+          
+          <div className="relative bg-gradient-card rounded-2xl border border-border/50 overflow-hidden">
+            {inputType === "text" ? (
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Paste news article, headline, or social media post here..."
+                className="w-full h-40 p-5 bg-transparent text-foreground placeholder:text-muted-foreground resize-none focus:outline-none font-heading"
+              />
+            ) : (
+              <input
+                type="url"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="https://example.com/article"
+                className="w-full p-5 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none font-heading"
+              />
+            )}
+            
+            <div className="flex items-center justify-between p-4 border-t border-border/50">
+              <span className="text-xs text-muted-foreground">
+                {content.length > 0 && `${content.length} characters`}
+              </span>
+              
+              <Button 
+                type="submit" 
+                variant="hero" 
+                size="lg"
+                disabled={!content.trim() || isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Analyzing...
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-4 h-4" />
+                    Analyze Content
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default ContentInput;
+[26/12, 6:32 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import { Shield, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const Header = () => {
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Shield className="w-6 h-6 text-primary" />
+            </div>
+            <span className="text-xl font-bold font-heading text-gradient">
+              TruthLens
+            </span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              How It Works
+            </a>
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              About
+            </a>
+            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              API
+            </a>
+          </nav>
+
+          {/* Actions */}
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" className="hidden md:inline-flex">
+              Sign In
+            </Button>
+            <Button variant="default" size="sm" className="hidden md:inline-flex">
+              Get Started
+            </Button>
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+[26/12, 6:33 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import { Shield, Zap, Eye, ArrowDown } from "lucide-react";
+
+const HeroSection = () => {
+  return (
+    <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-24 pb-12">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-hero" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-glow opacity-50" />
+      
+      {/* Animated grid lines */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `
+            linear-gradient(to right, hsl(var(--primary) / 0.1) 1px, transparent 1px),
+            linear-gradient(to bottom, hsl(var(--primary) / 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '60px 60px'
+        }} />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 opacity-0 animate-fade-up">
+            <Zap className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-primary">AI-Powered Verification</span>
+          </div>
+
+          {/* Headline */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-heading mb-6 opacity-0 animate-fade-up animation-delay-100">
+            See Through the{" "}
+            <span className="text-gradient">Noise</span>
+          </h1>
+
+          {/* Subheadline */}
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 opacity-0 animate-fade-up animation-delay-200">
+            Instantly analyze news, articles, and social media posts. 
+            Get a clear trust score with detailed explanations—no guesswork required.
+          </p>
+
+          {/* Feature Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-4 opacity-0 animate-fade-up animation-delay-300">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/50 border border-border/50">
+              <Shield className="w-4 h-4 text-success" />
+              <span className="text-sm text-foreground">Real-time Analysis</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/50 border border-border/50">
+              <Eye className="w-4 h-4 text-primary" />
+              <span className="text-sm text-foreground">Transparent Scoring</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/50 border border-border/50">
+              <Zap className="w-4 h-4 text-warning" />
+              <span className="text-sm text-foreground">Source Verification</span>
+            </div>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="mt-12 opacity-0 animate-fade-up animation-delay-400">
+            <ArrowDown className="w-5 h-5 text-muted-foreground mx-auto animate-bounce" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;
+[26/12, 6:33 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import { useEffect, useState } from "react";
+
+interface TrustScoreGaugeProps {
+  score: number;
+  size?: number;
+}
+
+const TrustScoreGauge = ({ score, size = 200 }: TrustScoreGaugeProps) => {
+  const [animatedScore, setAnimatedScore] = useState(0);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimatedScore(score);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [score]);
+
+  const getScoreColor = (value: number) => {
+    if (value >= 70) return "hsl(145, 65%, 45%)";
+    if (value >= 40) return "hsl(38, 95%, 55%)";
+    return "hsl(0, 72%, 55%)";
+  };
+
+  const getScoreLabel = (value: number) => {
+    if (value >= 70) return "Likely Credible";
+    if (value >= 40) return "Needs Verification";
+    return "Potentially Misleading";
+  };
+
+  const circumference = 2 * Math.PI * 45;
+  const strokeDashoffset = circumference - (animatedScore / 100) * circumference;
+
+  return (
+    <div className="relative flex flex-col items-center">
+      <svg width={size} height={size} viewBox="0 0 100 100" className="transform -rotate-90">
+        {/* Background circle */}
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill="none"
+          stroke="hsl(var(--secondary))"
+          strokeWidth="8"
+        />
+        {/* Progress circle */}
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          fill="none"
+          stroke={getScoreColor(animatedScore)}
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          className="transition-all duration-1000 ease-out"
+          style={{
+            filter: `drop-shadow(0 0 8px ${getScoreColor(animatedScore)})`,
+          }}
+        />
+      </svg>
+      
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span 
+          className="text-4xl font-bold font-heading transition-colors duration-500"
+          style={{ color: getScoreColor(animatedScore) }}
+        >
+          {Math.round(animatedScore)}
+        </span>
+        <span className="text-xs text-muted-foreground uppercase tracking-wider">
+          Trust Score
+        </span>
+      </div>
+      
+      <div 
+        className="mt-4 px-4 py-2 rounded-full text-sm font-medium transition-colors duration-500"
+        style={{ 
+          backgroundColor: `${getScoreColor(animatedScore)}20`,
+          color: getScoreColor(animatedScore) 
+        }}
+      >
+        {getScoreLabel(animatedScore)}
+      </div>
+    </div>
+  );
+};
+
+export default TrustScoreGauge;
+[26/12, 6:33 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: <!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TruthLens - AI-Powered Fake News Detection</title>
+    <meta name="description" content="Instantly verify news and detect misinformation with AI-powered analysis. Get clear trust scores and detailed explanations for any content." />
+    <meta name="keywords" content="fake news detection, misinformation, fact checking, AI verification, news analysis" />
+    <link rel="canonical" href="https://truthlens.app" />
+    
+    <meta property="og:title" content="TruthLens - See Through the Noise" />
+    <meta property="og:description" content="AI-powered fake news detection. Verify content instantly with transparent trust scores." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TruthLens - AI-Powered Fake News Detection" />
+    <meta name="twitter:description" content="Instantly verify news and detect misinformation with AI analysis." />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+[26/12, 6:34 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+
+import { cn } from "@/lib/utils";
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow hover:shadow-[0_0_50px_hsl(175_70%_45%_/_0.3)]",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline: "border border-border bg-transparent hover:bg-secondary hover:text-secondary-foreground",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-secondary hover:text-secondary-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        hero: "bg-primary text-primary-foreground font-semibold shadow-glow hover:shadow-[0_0_60px_hsl(175_70%_45%_/_0.4)] hover:scale-105 active:scale-100",
+        glass: "bg-secondary/50 backdrop-blur-sm border border-border/50 text-foreground hover:bg-secondary/70",
+      },
+      size: {
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-12 rounded-lg px-8 text-base",
+        xl: "h-14 rounded-xl px-10 text-lg",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+);
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
+}
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+Button.displayName = "Button";
+
+export { Button, buttonVariants };
+[26/12, 6:34 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@layer base {
+  :root {
+    --background: 220 20% 6%;
+    --foreground: 210 20% 95%;
+
+    --card: 220 18% 10%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 220 18% 10%;
+    --popover-foreground: 210 20% 95%;
+
+    --primary: 175 70% 45%;
+    --primary-foreground: 220 20% 6%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 220 15% 18%;
+    --muted-foreground: 215 15% 55%;
+
+    --accent: 175 60% 35%;
+    --accent-foreground: 210 20% 95%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 210 40% 98%;
+
+    --warning: 38 95% 55%;
+    --warning-foreground: 220 20% 6%;
+
+    --success: 145 65% 45%;
+    --success-foreground: 220 20% 6%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 15%;
+    --ring: 175 70% 45%;
+
+    --radius: 0.75rem;
+
+    /* Custom design tokens */
+    --gradient-primary: linear-gradient(135deg, hsl(175 70% 45%), hsl(195 75% 50%));
+    --gradient-hero: linear-gradient(180deg, hsl(220 20% 6%) 0%, hsl(220 25% 12%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(220 18% 12%) 0%, hsl(220 18% 8%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(175 70% 45% / 0.15) 0%, transparent 70%);
+    
+    --shadow-glow: 0 0 40px hsl(175 70% 45% / 0.2);
+    --shadow-card: 0 4px 24px hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 8px 32px hsl(0 0% 0% / 0.4);
+
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --sidebar-background: 220 18% 10%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 175 70% 45%;
+    --sidebar-primary-foreground: 220 20% 6%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 175 70% 45%;
+  }
+
+  .dark {
+    --background: 220 20% 6%;
+    --foreground: 210 20% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-heading);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-primary);
+  }
+
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .bg-gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .bg-glow {
+    background: var(--gradient-glow);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+}
+
+/* Custom animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes score-fill {
+  from {
+    stroke-dashoffset: 283;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-scan {
+  animation: scan-line 2s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out forwards;
+}
+
+.animate-score-fill {
+  animation: score-fill 1.5s ease-out forwards;
+}
+
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 400ms;
+}
+[26/12, 6:34 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import { useState } from "react";
+import Header from "@/components/Header";
+import HeroSection from "@/components/HeroSection";
+import ContentInput from "@/components/ContentInput";
+import AnalysisResults from "@/components/AnalysisResults";
+
+interface AnalysisResult {
+  trustScore: number;
+  emotionalManipulation: number;
+  sourceCredibility: number;
+  factualConsistency: number;
+  linguisticPatterns: number;
+  summary: string;
+  keyFindings: string[];
+}
+
+const Index = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [results, setResults] = useState<AnalysisResult | null>(null);
+
+  const simulateAnalysis = (content: string): AnalysisResult => {
+    // Simulated analysis based on content length and patterns
+    const hasEmotionalWords = /shocking|unbelievable|they don't want you|secret|exposed/i.test(content);
+    const hasSourceMentions = /according to|study shows|research|experts|officials/i.test(content);
+    const isLongForm = content.length > 500;
+    const hasAllCaps = (content.match(/[A-Z]{5,}/g) || []).length > 2;
+    
+    const baseScore = 50;
+    let trustScore = baseScore;
+    
+    if (hasSourceMentions) trustScore += 20;
+    if (isLongForm) trustScore += 10;
+    if (hasEmotionalWords) trustScore -= 25;
+    if (hasAllCaps) trustScore -= 15;
+    
+    trustScore = Math.max(10, Math.min(95, trustScore + (Math.random() * 20 - 10)));
+    
+    const emotionalManipulation = hasEmotionalWords 
+      ? Math.round(60 + Math.random() * 30) 
+      : Math.round(15 + Math.random() * 25);
+      
+    const sourceCredibility = hasSourceMentions 
+      ? Math.round(60 + Math.random() * 30) 
+      : Math.round(20 + Math.random() * 30);
+      
+    const factualConsistency = Math.round(trustScore - 10 + Math.random() * 20);
+    const linguisticPatterns = hasAllCaps 
+      ? Math.round(50 + Math.random() * 30) 
+      : Math.round(10 + Math.random() * 30);
+
+    const keyFindings: string[] = [];
+    
+    if (hasSourceMentions) {
+      keyFindings.push("Content references external sources, which increases credibility.");
+    } else {
+      keyFindings.push("No verifiable sources are cited in this content.");
+    }
+    
+    if (hasEmotionalWords) {
+      keyFindings.push("High emotional language detected that may influence reader perception.");
+    }
+    
+    if (hasAllCaps) {
+      keyFindings.push("Excessive use of capitalization suggests sensationalism.");
+    }
+    
+    if (isLongForm) {
+      keyFindings.push("Detailed content structure typical of legitimate reporting.");
+    } else {
+      keyFindings.push("Brief content may lack context for complete verification.");
+    }
+    
+    if (trustScore >= 70) {
+      keyFindings.push("Overall patterns are consistent with verified news sources.");
+    }
+
+    const summaries = {
+      high: "This content shows characteristics of credible reporting, with proper source citations and balanced language. However, always verify claims with multiple trusted sources.",
+      medium: "This content contains mixed signals. While some elements suggest legitimacy, others raise concerns. We recommend cross-referencing with established news outlets before sharing.",
+      low: "This content displays multiple red flags commonly associated with misinformation, including emotional manipulation, lack of sources, and sensational language. Exercise extreme caution."
+    };
+
+    const summary = trustScore >= 70 
+      ? summaries.high 
+      : trustScore >= 40 
+        ? summaries.medium 
+        : summaries.low;
+
+    return {
+      trustScore: Math.round(trustScore),
+      emotionalManipulation,
+      sourceCredibility,
+      factualConsistency: Math.max(10, Math.min(95, factualConsistency)),
+      linguisticPatterns,
+      summary,
+      keyFindings
+    };
+  };
+
+  const handleAnalyze = async (content: string) => {
+    setIsLoading(true);
+    setResults(null);
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const analysisResults = simulateAnalysis(content);
+    setResults(analysisResults);
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Header />
+      <HeroSection />
+      
+      <main className="container mx-auto px-4 pb-20">
+        <ContentInput onAnalyze={handleAnalyze} isLoading={isLoading} />
+        
+        {isLoading && (
+          <div className="w-full max-w-3xl mx-auto mt-12">
+            <div className="bg-gradient-card rounded-2xl border border-border/50 p-8 text-center">
+              <div className="relative w-16 h-16 mx-auto mb-4">
+                <div className="absolute inset-0 rounded-full border-2 border-primary/20" />
+                <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-primary animate-spin" />
+              </div>
+              <p className="text-muted-foreground">Analyzing content patterns...</p>
+              <p className="text-sm text-muted-foreground/60 mt-1">
+                Checking sources, language, and credibility signals
+              </p>
+            </div>
+          </div>
+        )}
+        
+        {results && !isLoading && (
+          <AnalysisResults results={results} />
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default Index;
+[26/12, 6:35 pm] 𝓓𝓡𝓔𝓐𝓜💜𝓔𝓡: import type { Config } from "tailwindcss";
+
+export default {
+  darkMode: ["class"],
+  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  prefix: "",
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      fontFamily: {
+        heading: ['Space Grotesk', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
+      },
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config;
